@@ -7,6 +7,7 @@ services:
     environment:
       # SQLALCHEMY_DATABASE_URI: mysql://root:password@mariadb/test
       SQLALCHEMY_DATABASE_URI: postgresql://postgres:password@postgres/test
+      SIMULATE_NETWORK_LATENCY: "true"
     volumes:
       - .:/src
     ports:

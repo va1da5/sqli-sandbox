@@ -2,9 +2,10 @@ from flask import request, jsonify
 from datetime import datetime as dt
 from flask import current_app as app
 from .models import db, User
+from .utils import simulate_network_latency
 
 
-@app.route("/", methods=["GET"])
+@app.route("/user/create", methods=["GET"])
 def user_records():
     """Create a user via query string parameters."""
     username = request.args.get("user")
@@ -21,12 +22,14 @@ def user_records():
 
 
 @app.route("/users/list", methods=["GET"])
+@simulate_network_latency
 def users_get():
     users = db.session.query(User).all()
     return jsonify([user.serialize() for user in users])
 
 
-@app.route("/query/user/details", methods=["GET"])
+@app.route("/user/details", methods=["GET"])
+@simulate_network_latency
 def user_get_by_id():
     user_id = request.args.get("id")
     results_proxy = db.engine.execute(f"select * from users where (id = '{user_id}')")
@@ -34,7 +37,8 @@ def user_get_by_id():
     return jsonify(results)
 
 
-@app.route("/query/user/exists", methods=["GET"])
+@app.route("/user/exists", methods=["GET"])
+@simulate_network_latency
 def user_exists_by_id():
     user_id = request.args.get("id")
     results_proxy = db.engine.execute(
@@ -44,7 +48,8 @@ def user_exists_by_id():
     return jsonify({"user_exists": user_exists})
 
 
-@app.route("/query/user/blind", methods=["GET"])
+@app.route("/user/blind", methods=["GET"])
+@simulate_network_latency
 def users_blind_query():
     user_id = request.args.get("id")
     db.engine.execute(f"select * from users where id = '{user_id}' limit 1")
@@ -60,7 +65,7 @@ def users_create():
             new_user = User(
                 username=user,
                 created=dt.now(),
-                admin=False,
+                admin=False
             )
             db.session.add(new_user)
             db.session.commit()
