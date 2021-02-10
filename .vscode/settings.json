@@ -1,4 +1,10 @@
 {
   "python.formatting.provider": "black",
+  "editor.formatOnSave": true,
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
   "python.pythonPath": ".venv/bin/python"
 }

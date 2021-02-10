@@ -21,4 +21,4 @@ COPY . .
 
 ENTRYPOINT [ "python" ]
 
-CMD [ "wsgi.py" ]
+CMD [ "uwsgi.py" ]
