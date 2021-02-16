@@ -39,7 +39,7 @@ def user_get_list(*, db: Session = Depends(dependencies.get_db)) -> Any:
 
 @router.get("/details")
 @simulate_network_latency
-def user_get_details(*, db: Session = Depends(dependencies.get_engine), id: str):
+def user_get_details(*, db: Session = Depends(dependencies.get_db), id: str):
     """Get user details by id"""
     results_proxy = db.execute(f"select * from users where (id = '{id}')")
     return [{**row} for row in results_proxy]
@@ -47,7 +47,7 @@ def user_get_details(*, db: Session = Depends(dependencies.get_engine), id: str)
 
 @router.get("/exists", response_model=schemas.UserExists)
 @simulate_network_latency
-def user_exists(*, db: Session = Depends(dependencies.get_engine), id: str):
+def user_exists(*, db: Session = Depends(dependencies.get_db), id: str):
     """Verify user existence by id"""
     results_proxy = db.execute(f"select * from users where (id = '{id}') limit 1")
     user_exists = bool(len(list(results_proxy)))
@@ -55,7 +55,7 @@ def user_exists(*, db: Session = Depends(dependencies.get_engine), id: str):
 
 
 @router.get("/blind", response_model=schemas.Message)
-def user_blind_query(*, db: Session = Depends(dependencies.get_engine), id: str):
+def user_blind_query(*, db: Session = Depends(dependencies.get_db), id: str):
     """Execute SQL query that does not return any values"""
     db.execute(f"select * from users where id = '{id}' limit 1")
     return {"msg": "Query executed. Response does not include results from database"}
